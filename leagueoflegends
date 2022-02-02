@@ -70,7 +70,7 @@ export_env_variables() {
     export WINE_REQ_MOD=(d3dx9 vcrun2019)
     export WINEPREFIX="$HOME/.local/share/leagueoflegends"
     export INSTALL_DIR="$WINEPREFIX/drive_c/Riot Games"
-    export CLIENT_EXE="$INSTALL_DIR/Riot Client/RiotClientServices.exe"
+    export CLIENT_EXE="$INSTALL_DIR/League of Legends/LeagueClient.exe"
 
     export MESA_GLTHREAD=true
     export STAGING_SHARED_MEMORY=1
@@ -439,6 +439,16 @@ cleanup_logs() {
     fi
 }
 
+start_winecfg() {
+    msg "Starting winecfg"
+
+    if [ ! -d "$WINEPREFIX" ]; then
+        die "The game is not installed. Please install it first"
+    fi
+
+    WINEPREFIX="$WINEPREFIX" winecfg &
+}
+
 usage() {
     cat <<EOF
 [!] Usage: $(basename "${BASH_SOURCE[0]}") [options] <command>
@@ -496,6 +506,7 @@ main() {
         add-dxvk) add_dxvk ;;
         del-dxvk) del_dxvk ;;
         cleanup-logs) cleanup_logs ;;
+        winecfg) start_winecfg ;;
         kill)
             wineserver --kill
             pkill -f -- '--title=League of Legends' # kill the zenity dialog
